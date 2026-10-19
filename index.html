@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Capsulla download tests</title>
+    <style>
+      body {
+        font: 16px/1.5 system-ui, sans-serif;
+        max-width: 40rem;
+        margin: 3rem auto;
+        padding: 0 1rem;
+        color: #1a1a1a;
+        background: #fff;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.4rem 0.6rem;
+        border-bottom: 1px solid #e5e5e5;
+      }
+      code {
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Capsulla download tests</h1>
+    <p>
+      Every file is one line of plain text with an executable's extension —
+      nothing here runs. With the Capsulla extension installed, each
+      <code>test.*</code> download should be cancelled with a notification,
+      and <code>allowed.txt</code> should download.
+    </p>
+    <table>
+      <thead>
+        <tr><th>File</th><th>Expected</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><a href="files/test.exe" download>test.exe</a></td><td>Blocked</td></tr>
+        <tr><td><a href="files/test.dll" download>test.dll</a></td><td>Blocked</td></tr>
+        <tr><td><a href="files/test.msi" download>test.msi</a></td><td>Blocked</td></tr>
+        <tr><td><a href="files/test.dmg" download>test.dmg</a></td><td>Blocked</td></tr>
+        <tr><td><a href="files/test.lnk" download>test.lnk</a></td><td>Blocked</td></tr>
+        <tr><td><a href="files/test.scr" download>test.scr</a></td><td>Blocked</td></tr>
+        <tr><td><a href="files/test.sh" download>test.sh</a></td><td>Blocked</td></tr>
+        <tr><td><a href="files/test.bat" download>test.bat</a></td><td>Blocked</td></tr>
+        <tr><td><a href="files/test.cmd" download>test.cmd</a></td><td>Blocked</td></tr>
+        <tr><td><a href="files/test.ps1" download>test.ps1</a></td><td>Blocked</td></tr>
+        <tr><td><a href="files/test.jar" download>test.jar</a></td><td>Blocked</td></tr>
+        <tr><td><a href="files/test.iso" download>test.iso</a></td><td>Blocked</td></tr>
+        <tr><td><a href="files/allowed.txt" download>allowed.txt</a></td><td>Downloads</td></tr>
+      </tbody>
+    </table>
+  </body>
+</html>
