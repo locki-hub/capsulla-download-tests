@@ -1,0 +1,4 @@
+# The README describes the test files for whoever maintains them; it is not a
+# page, so it stays out of the published site and out of search results.
+exclude:
+  - README.md

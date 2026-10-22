@@ -3,59 +3,468 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex" />
-    <title>Capsulla download tests</title>
+    <title>Download test: check that Capsulla stops risky downloads</title>
+    <meta
+      name="description"
+      content="Harmless files named like installers and scripts. Open the page in Chrome with Capsulla installed, click each one and see the risky ones stopped."
+    />
+    <link rel="canonical" href="https://locki-hub.github.io/capsulla-download-tests/" />
+
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f1f7fb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e1416" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="icon" href="assets/icon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+    <!-- The capsulla.io card, copied rather than linked: the landing renames
+         its card file when the picture changes. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Capsulla" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://locki-hub.github.io/capsulla-download-tests/" />
+    <meta property="og:title" content="Download test: check that Capsulla stops risky downloads" />
+    <meta
+      property="og:description"
+      content="Harmless files named like installers and scripts. Open the page in Chrome with Capsulla installed, click each one and see the risky ones stopped."
+    />
+    <meta property="og:image" content="https://locki-hub.github.io/capsulla-download-tests/assets/og.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="2400" />
+    <meta property="og:image:height" content="1260" />
+    <meta
+      property="og:image:alt"
+      content="Capsulla — browser DLP for Google Workspace. Sensitive data stops at the browser."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Download test: check that Capsulla stops risky downloads" />
+    <meta
+      name="twitter:description"
+      content="Harmless files named like installers and scripts. Open the page in Chrome with Capsulla installed, click each one and see the risky ones stopped."
+    />
+    <meta name="twitter:image" content="https://locki-hub.github.io/capsulla-download-tests/assets/og.jpg" />
+    <meta
+      name="twitter:image:alt"
+      content="Capsulla — browser DLP for Google Workspace. Sensitive data stops at the browser."
+    />
+
+    <!-- Points at the organization capsulla.io describes, by its @id, instead
+         of describing it again. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "@id": "https://locki-hub.github.io/capsulla-download-tests/#webpage",
+        "url": "https://locki-hub.github.io/capsulla-download-tests/",
+        "name": "Download test: check that Capsulla stops risky downloads",
+        "description": "Harmless files named like installers and scripts. Open the page in Chrome with Capsulla installed, click each one and see the risky ones stopped.",
+        "inLanguage": "en",
+        "publisher": {
+          "@type": "Organization",
+          "@id": "https://capsulla.io/#organization",
+          "name": "Capsulla",
+          "url": "https://capsulla.io/"
+        }
+      }
+    </script>
+
+    <link
+      rel="preload"
+      href="assets/fonts/dm-sans-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/suez-one-latin-400-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <style>
+      @font-face {
+        font-family: "DM Sans";
+        src: url("assets/fonts/dm-sans-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 1000;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Geist Mono";
+        src: url("assets/fonts/geist-mono-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Suez One";
+        src: url("assets/fonts/suez-one-latin-400-normal.woff2") format("woff2");
+        font-weight: 400;
+        font-display: swap;
+      }
+
+      /* Values from the capsulla repo: packages/theme/tokens.css, the landing's
+         globals.css and its ActionChip greens. Keep them in step when the
+         brand changes. */
+      :root {
+        --background: oklch(1 0 0);
+        --foreground: oklch(0.148 0.004 228.8);
+        --card: oklch(1 0 0);
+        --muted: oklch(0.963 0.002 197.1);
+        --muted-foreground: oklch(0.56 0.021 213.5);
+        --border: oklch(0.925 0.005 214.3);
+        --primary: oklch(0.5 0.134 242.749);
+        --brand: oklch(0.5 0.134 242.749);
+        --band: oklch(0.972 0.008 236.5);
+        --block: oklch(0.577 0.245 27.325);
+        --allow: oklch(0.527 0.154 150.069);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --background: oklch(0.148 0.004 228.8);
+          --foreground: oklch(0.987 0.002 197.1);
+          --card: oklch(0.218 0.008 223.9);
+          --muted: oklch(0.275 0.011 216.9);
+          --muted-foreground: oklch(0.723 0.014 214.4);
+          --border: oklch(1 0 0 / 10%);
+          --primary: oklch(0.443 0.11 240.79);
+          --brand: oklch(0.685 0.169 237.323);
+          --band: oklch(0.185 0.01 228.8);
+          --block: oklch(0.704 0.191 22.216);
+          --allow: oklch(0.792 0.209 151.711);
+        }
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
       body {
-        font: 16px/1.5 system-ui, sans-serif;
-        max-width: 40rem;
-        margin: 3rem auto;
-        padding: 0 1rem;
-        color: #1a1a1a;
-        background: #fff;
-      }
-      table {
-        border-collapse: collapse;
-        width: 100%;
-      }
-      th,
-      td {
-        text-align: left;
-        padding: 0.4rem 0.6rem;
-        border-bottom: 1px solid #e5e5e5;
+        margin: 0;
+        min-height: 100dvh;
+        font-family: "DM Sans", system-ui, sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--foreground);
+        background: var(--background);
+        -webkit-font-smoothing: antialiased;
       }
       code {
-        font-size: 0.9em;
+        font-family: "Geist Mono", ui-monospace, monospace;
+      }
+      a {
+        color: inherit;
+      }
+      a:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
+        border-radius: 0.375rem;
+      }
+      .wrap {
+        width: 100%;
+        max-width: 44rem;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+
+      .hero {
+        background: var(--band);
+      }
+      .intro {
+        border-bottom: 1px solid var(--border);
+      }
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        margin-top: 2rem;
+        text-decoration: none;
+        user-select: none;
+      }
+      .logo picture,
+      .logo img {
+        display: block;
+        width: 1.45rem;
+        height: 1.9rem;
+      }
+      .logo span {
+        font-family: "Suez One", serif;
+        font-size: 1.35rem;
+        line-height: 1;
+      }
+      .logo span span {
+        font-size: 1.6rem;
+        color: var(--primary);
+      }
+      @media (prefers-color-scheme: dark) {
+        .logo span span {
+          color: var(--brand);
+        }
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(2.25rem, 6vw, 3rem);
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        text-wrap: balance;
+      }
+      .lead {
+        margin: 1.5rem 0 0;
+        font-size: 1.125rem;
+        color: color-mix(in oklch, var(--foreground) 70%, transparent);
+        text-wrap: pretty;
+      }
+      .lead + .lead {
+        margin-top: 1rem;
+      }
+      .intro .wrap {
+        padding-top: 4.5rem;
+        padding-bottom: 4rem;
+      }
+
+      .files {
+        margin: 3.5rem 0 0;
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        background: var(--card);
+        overflow: hidden;
+      }
+      .files-head,
+      .file {
+        display: grid;
+        grid-template-columns: 1fr auto 1.25rem;
+        align-items: center;
+        gap: 1rem;
+        padding: 0 1.25rem;
+      }
+      .files-head {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid color-mix(in oklch, var(--border) 70%, transparent);
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+      }
+      .files ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .files li + li {
+        border-top: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
+      }
+      .files li.control {
+        border-top: 1px solid var(--border);
+        background: color-mix(in oklch, var(--muted) 35%, transparent);
+      }
+      .file {
+        min-height: 3.25rem;
+        text-decoration: none;
+        transition: background-color 150ms ease;
+      }
+      .file:hover {
+        background: var(--muted);
+      }
+      .file:focus-visible {
+        outline-offset: -2px;
+        border-radius: 0;
+      }
+      .file code {
+        font-size: 0.95rem;
+        color: color-mix(in oklch, var(--foreground) 85%, transparent);
+        overflow-wrap: anywhere;
+      }
+      .chip {
+        padding: 0.125rem 0.625rem;
+        border: 1px solid;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1.5;
+      }
+      .chip.block {
+        color: var(--block);
+        border-color: color-mix(in oklch, var(--block) 40%, transparent);
+      }
+      .chip.allow {
+        color: var(--allow);
+        border-color: color-mix(in oklch, var(--allow) 50%, transparent);
+      }
+      .file svg {
+        width: 1.125rem;
+        height: 1.125rem;
+        color: var(--muted-foreground);
+        transition: color 150ms ease;
+      }
+      .file:hover svg {
+        color: var(--brand);
+      }
+
+      .after {
+        margin-top: 3.5rem;
+      }
+      h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .after p,
+      .foot p {
+        margin: 0.75rem 0 0;
+        color: color-mix(in oklch, var(--foreground) 70%, transparent);
+      }
+
+      .foot {
+        margin-top: 4rem;
+        padding: 2.5rem 0 4rem;
+        border-top: 1px solid var(--border);
+      }
+      .foot p {
+        margin: 0;
+      }
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem 1.75rem;
+        margin-top: 1.5rem;
+      }
+      .links a {
+        font-weight: 500;
+        text-underline-offset: 4px;
+        text-decoration: none;
+      }
+      .links a:hover {
+        text-decoration: underline;
+      }
+      .links .primary {
+        color: var(--brand);
+      }
+      .links .primary svg {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        margin-left: 0.375rem;
+        vertical-align: -0.15em;
+        transition: transform 150ms ease;
+      }
+      .links .primary:hover svg {
+        transform: translateX(2px);
+      }
+      .links .secondary {
+        color: var(--muted-foreground);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+        }
       }
     </style>
   </head>
   <body>
-    <h1>Capsulla download tests</h1>
-    <p>
-      Every file is one line of plain text with an executable's extension —
-      nothing here runs. With the Capsulla extension installed, each
-      <code>test.*</code> download should be cancelled with a notification,
-      and <code>allowed.txt</code> should download.
-    </p>
-    <table>
-      <thead>
-        <tr><th>File</th><th>Expected</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><a href="files/test.exe" download>test.exe</a></td><td>Blocked</td></tr>
-        <tr><td><a href="files/test.dll" download>test.dll</a></td><td>Blocked</td></tr>
-        <tr><td><a href="files/test.msi" download>test.msi</a></td><td>Blocked</td></tr>
-        <tr><td><a href="files/test.dmg" download>test.dmg</a></td><td>Blocked</td></tr>
-        <tr><td><a href="files/test.lnk" download>test.lnk</a></td><td>Blocked</td></tr>
-        <tr><td><a href="files/test.scr" download>test.scr</a></td><td>Blocked</td></tr>
-        <tr><td><a href="files/test.sh" download>test.sh</a></td><td>Blocked</td></tr>
-        <tr><td><a href="files/test.bat" download>test.bat</a></td><td>Blocked</td></tr>
-        <tr><td><a href="files/test.cmd" download>test.cmd</a></td><td>Blocked</td></tr>
-        <tr><td><a href="files/test.ps1" download>test.ps1</a></td><td>Blocked</td></tr>
-        <tr><td><a href="files/test.jar" download>test.jar</a></td><td>Blocked</td></tr>
-        <tr><td><a href="files/test.iso" download>test.iso</a></td><td>Blocked</td></tr>
-        <tr><td><a href="files/allowed.txt" download>allowed.txt</a></td><td>Downloads</td></tr>
-      </tbody>
-    </table>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+        <path d="M7 11l5 5l5 -5" />
+        <path d="M12 4l0 12" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12l14 0" />
+        <path d="M13 18l6 -6" />
+        <path d="M13 6l6 6" />
+      </symbol>
+    </svg>
+
+    <header class="hero">
+      <div class="wrap">
+        <a class="logo" href="https://capsulla.io" aria-label="Capsulla home">
+          <picture>
+            <source srcset="assets/capsulla-mini-logo.svg" media="(prefers-color-scheme: dark)" />
+            <img src="assets/capsulla-mini-logo-dark.svg" alt="" />
+          </picture>
+          <span>Capsulla<span>.</span></span>
+        </a>
+      </div>
+    </header>
+
+    <main>
+    <section class="hero intro">
+      <div class="wrap">
+        <h1>Capsulla download test</h1>
+        <p class="lead">
+          Open this page in a browser where Capsulla is installed and click
+          each file. The ones marked Blocked should be cancelled before they
+          reach the disk, with a Capsulla notice on the page.
+          <code>allowed.txt</code> is the control: it should download as
+          normal.
+        </p>
+        <p class="lead">
+          Every file is one line of plain text under an executable's name.
+          Nothing here runs, even if it downloads.
+        </p>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <section class="files" aria-label="Test files">
+        <div class="files-head" aria-hidden="true">
+          <span>File</span><span>Expected</span><span></span>
+        </div>
+        <ul>
+          <li><a class="file" rel="nofollow" href="files/test.exe" download><code>test.exe</code><span class="chip block">Blocked</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+          <li><a class="file" rel="nofollow" href="files/test.dll" download><code>test.dll</code><span class="chip block">Blocked</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+          <li><a class="file" rel="nofollow" href="files/test.msi" download><code>test.msi</code><span class="chip block">Blocked</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+          <li><a class="file" rel="nofollow" href="files/test.dmg" download><code>test.dmg</code><span class="chip block">Blocked</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+          <li><a class="file" rel="nofollow" href="files/test.lnk" download><code>test.lnk</code><span class="chip block">Blocked</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+          <li><a class="file" rel="nofollow" href="files/test.scr" download><code>test.scr</code><span class="chip block">Blocked</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+          <li><a class="file" rel="nofollow" href="files/test.sh" download><code>test.sh</code><span class="chip block">Blocked</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+          <li><a class="file" rel="nofollow" href="files/test.bat" download><code>test.bat</code><span class="chip block">Blocked</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+          <li><a class="file" rel="nofollow" href="files/test.cmd" download><code>test.cmd</code><span class="chip block">Blocked</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+          <li><a class="file" rel="nofollow" href="files/test.ps1" download><code>test.ps1</code><span class="chip block">Blocked</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+          <li><a class="file" rel="nofollow" href="files/test.jar" download><code>test.jar</code><span class="chip block">Blocked</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+          <li><a class="file" rel="nofollow" href="files/test.iso" download><code>test.iso</code><span class="chip block">Blocked</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+          <li class="control"><a class="file" rel="nofollow" href="files/allowed.txt" download><code>allowed.txt</code><span class="chip allow">Downloads</span><svg aria-hidden="true"><use href="#i-download" /></svg></a></li>
+        </ul>
+      </section>
+
+      <section class="after">
+        <h2>After a block</h2>
+        <p>
+          The download is cancelled and the page shows a Capsulla notice
+          naming the restricted file type. The same block appears in your
+          Capsulla console under Audit &amp; Events.
+        </p>
+      </section>
+    </div>
+    </main>
+
+    <footer class="wrap">
+      <div class="foot">
+        <p>
+          Capsulla keeps company data out of AI tools and stops risky
+          downloads, right in Chrome. You set it up once in Google Admin.
+        </p>
+        <div class="links">
+          <a class="primary" href="https://capsulla.io/">
+            Capsulla: browser DLP for Google Workspace
+            <svg aria-hidden="true"><use href="#i-arrow" /></svg>
+          </a>
+          <a class="secondary" href="https://capsulla.io/use-cases/file-uploads-and-downloads">
+            Blocking risky downloads
+          </a>
+          <a class="secondary" href="https://chromewebstore.google.com/detail/capsulla/mlkicompblcckemkmmphgnebgfapdpbf">
+            Chrome Web Store
+          </a>
+          <a class="secondary" href="https://capsulla.io/force-install-guide">
+            Force-install guide
+          </a>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
